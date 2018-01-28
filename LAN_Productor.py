@@ -1,28 +1,28 @@
 from collections import defaultdict
 import pathlib
 import ftplib
-# import argparse
+import argparse
 
 import click
 import rasterio
 import numpy as np
 
-# folder where the products will be writen at
+try:
+    from local_config import wp_ftp, WORKFOLDER
+except ImportError:
+    wp_ftp = {
+        'ftp_server': 'ftp.worldpop.org.uk',
+        'user': 'user',
+        'password': 'password',
+    }
+    WORKFOLDER = pathlib.Path(__file__).parent
 
-WORKFOLDER = pathlib.Path(__file__).parent
+GDAL_CACHEMAX = 512  # mb
+wp_ftp['root'] = '/WP515640_Global/Covariates/{iso}/{product}'
 
 iso = 'atf'.lower()
 year_start = 2015
 year_end = 2016
-
-GDAL_CACHEMAX = 512  # mb
-
-wp_ftp = {
-    'ftp_server': 'ftp.worldpop.org.uk',
-    'user': 'wpftp',
-    'password': 'qw12wq1sZQ',
-    'root': '/WP515640_Global/Covariates/{iso}/{product}'
-}
 
 years = [year for year in range(year_start, year_end) if year != 2011]
 ISO_FOLDER = WORKFOLDER / iso.upper()
@@ -231,10 +231,11 @@ def footer(iso=iso):
 
 footer()
 
-# TODO
-# if __file__ == '__main__':
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('years', nargs='*')
-#     parser.add_argument('--iso', help='ISO Alpha3 code for the target country')
-#
-#     args = parser.parse_args()
+if __file__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('agrs', nargs='*')
+
+    parsed_arguments = parser.parse_args()
+
+    text_arguments = [arg for arg in parsed_arguments.args if not arg.isnumeric()]
+    numeric_arguments = [arg for arg in parsed_arguments.args if arg.isnumeric()].sort()
