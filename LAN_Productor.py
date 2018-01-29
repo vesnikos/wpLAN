@@ -78,7 +78,7 @@ def main(iso, year1, year2):
     def header():
         print(
             'Welcome to the Weighted LAN producing Program. This program is going to derive the Lights-At-Night Product '
-            'for: \n {iso} \n and years: \n{years}'.format(iso=iso, years=[y for y in years]))
+            'for: \n {iso} \n and years: \n{years}'.format(iso=iso, years=years))
 
     def download_ccid_product():
         with ftplib.FTP(wp_ftp['ftp_server'], user=wp_ftp['user'], passwd=wp_ftp['password']) as ftp:
@@ -155,8 +155,7 @@ def main(iso, year1, year2):
             outfile = OUTFOLDER.joinpath(outfile)
 
         # realise the LAN's if don't exist
-        if not (LAN_FOLDER.joinpath(LAN_1).exists()
-                or LAN_FOLDER.joinpath(LAN_2).exists()):
+        if not LAN_1.exists() or not LAN_2.exists():
             download_lan_product(year)
 
         databroker = DataBroker()
