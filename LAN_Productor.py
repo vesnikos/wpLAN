@@ -174,6 +174,10 @@ def main(iso, year1, year2):
                     if zone == nodata:
                         return nodata
 
+                    # special case for the water == 0
+                    if zone == 0:
+                        return 0.0
+
                     min = databroker.get_min(zone)
                     max = databroker.get_max(zone)
                     # range = databroker.get_range(zone)
